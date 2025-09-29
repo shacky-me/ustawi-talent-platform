@@ -86,8 +86,6 @@ export const metadata = {
     ],
   },
 
-  manifest: "/site.webmanifest",
-
   category: "art",
 };
 

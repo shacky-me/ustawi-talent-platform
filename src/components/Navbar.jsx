@@ -39,6 +39,25 @@ const Navbar = () => {
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
+  // Close mobile menu when clicking anywhere outside on small screens
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+
+    const handleViewportClick = (e) => {
+      // Only apply on small screens (below Tailwind's lg breakpoint ~1024px)
+      if (typeof window !== "undefined" && window.innerWidth >= 1024) return;
+
+      const clickedInsideMenu = e.target.closest(".mobile-menu-container");
+      const clickedToggleButton = e.target.closest(".mobile-menu-button");
+      if (!clickedInsideMenu && !clickedToggleButton) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("click", handleViewportClick);
+    return () => document.removeEventListener("click", handleViewportClick);
+  }, [isMobileMenuOpen]);
+
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -165,7 +184,7 @@ const Navbar = () => {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="lg:hidden p-2 rounded-lg hover:bg-slate-100 transition-colors"
+            className="lg:hidden p-2 rounded-lg hover:bg-slate-100 transition-colors mobile-menu-button"
           >
             <svg
               className="h-6 w-6 text-slate-700"
@@ -188,7 +207,7 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden bg-white border-t border-slate-200 shadow-lg">
+        <div className="lg:hidden bg-white border-t border-slate-200 shadow-lg mobile-menu-container">
           <div className="px-6 py-4 space-y-1 max-h-[calc(100vh-5rem)] overflow-y-auto">
             {navlinks.map((link) => {
               const isActive =
