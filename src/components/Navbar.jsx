@@ -28,50 +28,67 @@ const Navbar = () => {
     setMobileDropdown(mobileDropdown === display ? null : display);
   };
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (!e.target.closest(".dropdown-container")) {
+        setOpenDropdown(null);
+      }
+    };
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
+
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "bg-white/90 backdrop-blur-md shadow-sm"
-          : "bg-white/80 backdrop-blur-sm"
+          ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-slate-100"
+          : "bg-white/90 backdrop-blur-sm"
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
-          <Link
-            href="/"
-            className="text-2xl font-bold bg-gradient-to-r from-amber-600 to-amber-800 bg-clip-text text-transparent hover:from-amber-500 hover:to-amber-700 transition-all"
-          >
-            Ustawi Gallery
+          <Link href="/" className="flex items-center gap-2 group">
+            <div className="relative">
+              <div className="w-10 h-10 bg-gradient-to-br from-slate-800 via-slate-700 to-slate-600 rounded-lg flex items-center justify-center shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:scale-105">
+                <span className="text-white font-bold text-xl">U</span>
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-lg font-bold text-slate-900 tracking-tight leading-none">
+                Ustawi
+              </span>
+              <span className="text-[10px] uppercase tracking-widest text-slate-500 font-medium">
+                Gallery
+              </span>
+            </div>
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-1">
-            {navlinks.map((link) => {
+            {navlinks.map((link, index) => {
               const isActive =
-                pathname === link.path || pathname.startsWith(link.path + "/");
+                pathname === link.path ||
+                (link.path && pathname.startsWith(link.path + "/"));
               const hasSubmenu = link.submenu && link.submenu.length > 0;
 
               return (
                 <div
-                  key={link.path}
-                  className="relative"
-                  onMouseEnter={() =>
-                    hasSubmenu && setOpenDropdown(link.display)
-                  }
-                  onMouseLeave={() => hasSubmenu && setOpenDropdown(null)}
+                  key={link.display || index}
+                  className="relative dropdown-container"
                 >
-                  <Link
-                    href={link.path}
-                    className={`relative px-4 py-2 text-sm font-medium transition-all duration-200 flex items-center gap-1 ${
-                      isActive
-                        ? "text-amber-700"
-                        : "text-gray-700 hover:text-amber-700"
-                    }`}
-                  >
-                    {link.display}
-                    {hasSubmenu && (
+                  {hasSubmenu ? (
+                    <button
+                      onClick={() => handleDropdownToggle(link.display)}
+                      className={`relative px-4 py-2 text-sm font-medium transition-all duration-200 flex items-center gap-1 ${
+                        isActive
+                          ? "text-slate-900"
+                          : "text-slate-600 hover:text-slate-900"
+                      }`}
+                    >
+                      {link.display}
                       <svg
                         className={`w-4 h-4 transition-transform duration-200 ${
                           openDropdown === link.display ? "rotate-180" : ""
@@ -85,25 +102,37 @@ const Navbar = () => {
                       >
                         <path d="M19 9l-7 7-7-7" />
                       </svg>
-                    )}
-                    {isActive && !hasSubmenu && (
-                      <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-amber-600 to-amber-800 rounded-full" />
-                    )}
-                  </Link>
+                    </button>
+                  ) : (
+                    <Link
+                      href={link.path}
+                      className={`relative px-4 py-2 text-sm font-medium transition-all duration-200 flex items-center gap-1 ${
+                        isActive
+                          ? "text-slate-900"
+                          : "text-slate-600 hover:text-slate-900"
+                      }`}
+                    >
+                      {link.display}
+                      {isActive && (
+                        <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-slate-900 rounded-full" />
+                      )}
+                    </Link>
+                  )}
 
                   {/* Desktop Dropdown */}
                   {hasSubmenu && openDropdown === link.display && (
-                    <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-100 py-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                    <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-slate-200 py-2 animate-in fade-in slide-in-from-top-2 duration-200">
                       {link.submenu.map((sublink) => {
                         const isSubActive = pathname === sublink.path;
                         return (
                           <Link
                             key={sublink.path}
                             href={sublink.path}
+                            onClick={() => setOpenDropdown(null)}
                             className={`block px-4 py-2.5 text-sm transition-colors ${
                               isSubActive
-                                ? "text-amber-700 bg-amber-50 font-medium"
-                                : "text-gray-700 hover:text-amber-700 hover:bg-amber-50"
+                                ? "text-slate-900 bg-slate-100 font-medium"
+                                : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
                             }`}
                           >
                             {sublink.display}
@@ -121,13 +150,13 @@ const Navbar = () => {
           <div className="hidden lg:flex items-center space-x-4">
             <Link
               href="/signin"
-              className="text-sm font-medium text-gray-700 hover:text-amber-700 transition-colors"
+              className="text-sm font-medium text-slate-700 hover:text-slate-900 transition-colors"
             >
               Sign In
             </Link>
             <Link
               href="/sell"
-              className="bg-gradient-to-r from-amber-600 to-amber-700 text-white px-6 py-2.5 rounded-full text-sm font-medium hover:from-amber-700 hover:to-amber-800 hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
+              className="bg-slate-900 text-white px-6 py-2.5 rounded-full text-sm font-medium hover:bg-slate-800 hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
             >
               Sell Art
             </Link>
@@ -136,10 +165,10 @@ const Navbar = () => {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            className="lg:hidden p-2 rounded-lg hover:bg-slate-100 transition-colors"
           >
             <svg
-              className="h-6 w-6 text-gray-700"
+              className="h-6 w-6 text-slate-700"
               fill="none"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -159,24 +188,25 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden bg-white border-t shadow-lg">
+        <div className="lg:hidden bg-white border-t border-slate-200 shadow-lg">
           <div className="px-6 py-4 space-y-1 max-h-[calc(100vh-5rem)] overflow-y-auto">
             {navlinks.map((link) => {
               const isActive =
-                pathname === link.path || pathname.startsWith(link.path + "/");
+                pathname === link.path ||
+                (link.path && pathname.startsWith(link.path + "/"));
               const hasSubmenu = link.submenu && link.submenu.length > 0;
               const isDropdownOpen = mobileDropdown === link.display;
 
               return (
-                <div key={link.path}>
+                <div key={link.display || link.path}>
                   {hasSubmenu ? (
                     <div>
                       <button
                         onClick={() => handleMobileDropdownToggle(link.display)}
                         className={`w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                           isActive
-                            ? "bg-amber-50 text-amber-700"
-                            : "text-gray-700 hover:bg-gray-50 hover:text-amber-700"
+                            ? "bg-slate-100 text-slate-900"
+                            : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"
                         }`}
                       >
                         {link.display}
@@ -207,8 +237,8 @@ const Navbar = () => {
                                 onClick={() => setIsMobileMenuOpen(false)}
                                 className={`block px-4 py-2 rounded-lg text-sm transition-colors ${
                                   isSubActive
-                                    ? "bg-amber-50 text-amber-700 font-medium"
-                                    : "text-gray-600 hover:bg-amber-50 hover:text-amber-700"
+                                    ? "bg-slate-100 text-slate-900 font-medium"
+                                    : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                                 }`}
                               >
                                 {sublink.display}
@@ -224,8 +254,8 @@ const Navbar = () => {
                       onClick={() => setIsMobileMenuOpen(false)}
                       className={`block px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                         isActive
-                          ? "bg-amber-50 text-amber-700"
-                          : "text-gray-700 hover:bg-gray-50 hover:text-amber-700"
+                          ? "bg-slate-100 text-slate-900"
+                          : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"
                       }`}
                     >
                       {link.display}
@@ -235,18 +265,18 @@ const Navbar = () => {
               );
             })}
 
-            <div className="pt-4 space-y-2 border-t mt-4">
+            <div className="pt-4 space-y-2 border-t border-slate-200 mt-4">
               <Link
                 href="/signin"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="block px-4 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-amber-700 transition-colors"
+                className="block px-4 py-2.5 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors"
               >
                 Sign In
               </Link>
               <Link
                 href="/sell"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="block bg-gradient-to-r from-amber-600 to-amber-700 text-white px-4 py-2.5 rounded-lg text-sm font-medium text-center hover:from-amber-700 hover:to-amber-800 transition-colors"
+                className="block bg-slate-900 text-white px-4 py-2.5 rounded-lg text-sm font-medium text-center hover:bg-slate-800 transition-colors"
               >
                 Sell Art
               </Link>
