@@ -13,5 +13,5 @@ export const navlinks = [
   },
   { path: "/about", display: "About" },
   { path: "/contact", display: "Contact" },
-  { path: "/favourite", display: "Favourite" },
+  { path: "/favourite", display: "Favourites" },
 ];
