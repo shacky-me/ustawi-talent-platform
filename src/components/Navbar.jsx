@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { navlinks } from "@/config/navlinks";
@@ -61,28 +62,21 @@ const Navbar = () => {
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-slate-100"
-          : "bg-white/90 backdrop-blur-sm"
+        isScrolled ? "bg-white shadow-sm border-b border-slate-100" : "bg-white"
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="relative">
-              <div className="w-10 h-10 bg-gradient-to-br from-slate-800 via-slate-700 to-slate-600 rounded-lg flex items-center justify-center shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:scale-105">
-                <span className="text-white font-bold text-xl">U</span>
-              </div>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-lg font-bold text-slate-900 tracking-tight leading-none">
-                Ustawi
-              </span>
-              <span className="text-[10px] uppercase tracking-widest text-slate-500 font-medium">
-                Gallery
-              </span>
-            </div>
+          <Link href="/" className="flex items-center gap-3 group">
+            <Image
+              src="/logo/Ustawi.png"
+              alt="Ustawi Gallery logo"
+              width={120}
+              height={40}
+              className="h-10 w-auto object-contain"
+              priority
+            />
           </Link>
 
           {/* Desktop Navigation */}

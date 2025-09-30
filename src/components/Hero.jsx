@@ -1,9 +1,11 @@
+import Image from "next/image";
+
 const Hero = () => {
   return (
     <section className="relative isolate">
       {/* Background decorative gradient */}
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute -top-40 left-1/2 -translate-x-1/2 h-[38rem] w-[80rem] rounded-full bg-gradient-to-br from-slate-900 via-slate-700 to-slate-500 opacity-[0.08] blur-3xl" />
+        <div className="absolute -top-40 left-1/2 -translate-x-1/2 h-[38rem] w-[80rem] rounded-full blur-3xl" />
       </div>
 
       {/* Container */}
@@ -44,12 +46,28 @@ const Hero = () => {
 
           {/* Showcase card strip */}
           <div className="mt-12 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-            <div className="aspect-[4/5] rounded-2xl bg-[url('/globe.svg')] bg-center bg-no-repeat bg-white border border-slate-200" />
-            <div className="aspect-[4/5] rounded-2xl bg-gradient-to-br from-slate-100 to-white border border-slate-200" />
-            <div className="aspect-[4/5] rounded-2xl bg-[url('/window.svg')] bg-center bg-no-repeat bg-white border border-slate-200" />
-            <div className="aspect-[4/5] rounded-2xl bg-gradient-to-br from-white to-slate-100 border border-slate-200" />
-            <div className="aspect-[4/5] rounded-2xl bg-[url('/file.svg')] bg-center bg-no-repeat bg-white border border-slate-200" />
-            <div className="aspect-[4/5] rounded-2xl bg-gradient-to-br from-slate-100 to-white border border-slate-200" />
+            {[
+              "https://images.unsplash.com/photo-1594794312433-05a69a98b7a0?q=80&w=1200&auto=format&fit=crop",
+              "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?q=80&w=1200&auto=format&fit=crop",
+              "https://images.unsplash.com/photo-1535673774336-ef95d2851cf3?q=80&w=1200&auto=format&fit=crop",
+              "http://images.unsplash.com/photo-1605721911519-3dfeb3be25e7?q=80&w=1200&auto=format&fit=crop",
+              "https://images.unsplash.com/photo-1569091791842-7cfb64e04797?q=80&w=1200&auto=format&fit=crop",
+              "https://images.unsplash.com/photo-1567162020871-8292cd07ccae?q=80&w=1200&auto=format&fit=crop",
+            ].map((src, idx) => (
+              <div
+                key={idx}
+                className="relative aspect-[4/5] overflow-hidden rounded-2xl border border-slate-200 bg-white"
+              >
+                <Image
+                  src={src}
+                  alt="Artwork preview"
+                  fill
+                  sizes="(min-width: 1024px) 16vw, (min-width: 640px) 33vw, 50vw"
+                  className="object-cover"
+                  priority={idx < 2}
+                />
+              </div>
+            ))}
           </div>
         </div>
       </div>
